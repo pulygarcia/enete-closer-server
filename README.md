@@ -59,6 +59,20 @@ src/modules/vehicles/
 ├── vehicles.controller.ts  # Endpoints, Swagger Decorators y Guards
 └── vehicles.module.ts      # Registro de dependencias del módulo
 
+---
+
+## Testing
+
+- Test all service methods and edge cases
+- Mock all external dependencies (services, repositories)
+- Use descriptive test names in Spanish or English
+- Group related tests using `describe` blocks
+- Test error scenarios and exception handling
+- Verify mock interactions with `expect().toHaveBeenCalledWith()`
+- Keep test files under 500 lines when possible (split into multiple files if needed)
+
+---
+
 ### Levantando la Aplicación
 
 | `npm run start` 
