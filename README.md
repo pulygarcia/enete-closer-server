@@ -49,8 +49,8 @@ Todos los endpoints están bajo el prefijo `/api/v1/` para asegurar la compatibi
 
 ```text
 src/modules/vehicles/
-├── dto/                    # Data Transfer Objects (CreateVehicleDto, FilterVehicleDto)
-├── entities/               # Definición de tablas de Base de Datos (Vehicle.entity.ts)
+├── dto/             
+├── entities/        
 ├── services/               # Lógica de Negocio Granular
 │   ├── vehicle-creator.service.ts
 │   ├── vehicle-finder.service.ts
