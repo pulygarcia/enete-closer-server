@@ -180,3 +180,13 @@ src/modules/<nombre>/
 - **Permutas:** Un vehículo puede aceptar otro usado como parte de pago (`accepts_trade: true`).
 - **Imágenes:** Limitadas a 3 por vehículo para optimizar costos de Cloudinary (Portada, Interior, Detalle).
 - **Soft delete generalizado:** Preservar historial de ventas. Solo eliminar físicamente en casos excepcionales.
+
+## Testing
+
+- Test all service methods and edge cases
+- Mock all external dependencies (services, repositories)
+- Use descriptive test names in Spanish or English
+- Group related tests using `describe` blocks
+- Test error scenarios and exception handling
+- Verify mock interactions with `expect().toHaveBeenCalledWith()`
+- Keep test files under 500 lines when possible (split into multiple files if needed)
