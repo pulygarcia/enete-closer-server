@@ -11,7 +11,7 @@ export class VehicleDeleter {
   ) {}
 
   async run(id: string): Promise<void> {
-    const result = await this.vehicleRepository.delete(id);
+    const result = await this.vehicleRepository.softDelete(id);
     if (result.affected === 0) {
       throw new NotFoundException('El vehículo no existe');
     }

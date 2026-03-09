@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 // Import vehiculos after creating the vehicle entity
 // import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 
@@ -19,12 +20,15 @@ export class Owner {
   @Column({ type: 'text', nullable: true })
   observation: string;
 
-  // @OneToMany(() => Vehicle, (vehicle) => vehicle.owner)
-  // vehicles: Vehicle[];
+  @OneToMany(() => Vehicle, (vehicle) => vehicle.owner)
+  vehicles: Vehicle[];
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

@@ -1,10 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Owner } from '../../owners/entities/owner.entity';
 
 // Avoid using strings, use the enum instead
 export enum Transmission {
   MANUAL = 'Manual',
   AUTOMATIC = 'Automático',
+}
+
+export enum VehicleStatus {
+  AVAILABLE = 'AVAILABLE',
+  RESERVED = 'RESERVED',
+  SOLD = 'SOLD',
 }
 
 @Entity('vehicles')
@@ -41,6 +47,13 @@ export class Vehicle {
   @Column({ type: 'boolean', default: false })
   accepts_trade: boolean;
 
+  @Column({
+    type: 'enum',
+    enum: VehicleStatus,
+    default: VehicleStatus.AVAILABLE,
+  })
+  status: VehicleStatus;
+
   @Column({ type: 'simple-array', nullable: true })
   images: string[]; // We will store up to 3 URLs from Cloudinary
 
@@ -56,4 +69,7 @@ export class Vehicle {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

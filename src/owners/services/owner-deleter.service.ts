@@ -11,9 +11,8 @@ export class OwnerDeleter {
   ) {}
 
   async run(id: string): Promise<void> {
-    const result = await this.ownerRepository.delete(id);
+    const result = await this.ownerRepository.softDelete(id);
 
-    // if affected is 0, the id did not exist
     if (result.affected === 0) {
       throw new NotFoundException(`No se pudo eliminar: Dueño con ID ${id} no encontrado`);
     }

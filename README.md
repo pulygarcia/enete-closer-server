@@ -1,88 +1,146 @@
-# Eneté Closer - Backend API
+# Eneté Closer — Backend API
 
-Esta es la API central de **Eneté Closer**, un sistema de gestión de concesionaria y CRM especializado en vehículos de terceros (consignación). Construida con **NestJS**, sigue una arquitectura modular y orientada a servicios para garantizar escalabilidad, orden y un mantenimiento sencillo.
+API central de **Eneté Closer**, sistema de gestión de consignación de vehículos y CRM para intermediarios automotores. Construida con **NestJS**, sigue una arquitectura modular y orientada a servicios para garantizar escalabilidad, orden y mantenimiento sencillo.
+
+> Para detalles técnicos profundos, entidades, endpoints y reglas de negocio → ver [CONTEXT.md](./CONTEXT.md)
 
 ---
 
 ## Stack Tecnológico
 
-- **Framework:** [NestJS](https://nestjs.com/) (Node.js) v10+
-- **Lenguaje:** TypeScript
-- **Base de Datos:** PostgreSQL
-- **ORM:** [TypeORM](https://typeorm.io/)
-- **Documentación:** Swagger / OpenAPI 3.0
-- **Seguridad:** Passport.js + JWT + RBAC
-- **Validación:** Class-validator + Class-transformer
-- **Testing:** Jest (Unit e Integración)
-- **Almacenamiento:** Cloudinary SDK (Gestión de imágenes optimizada)
+| Capa | Tecnología |
+|---|---|
+| **Framework** | [NestJS](https://nestjs.com/) (Node.js) v10+ |
+| **Lenguaje** | TypeScript ~5.x |
+| **Base de Datos** | PostgreSQL 15+ |
+| **ORM** | [TypeORM](https://typeorm.io/) ~0.3.x |
+| **Autenticación** | [Better Auth](https://www.better-auth.com/) |
+| **Autorización** | RBAC por roles (guard) |
+| **Validación** | Class-validator + Class-transformer |
+| **Documentación** | Swagger / OpenAPI 3.0 → `/api/docs` |
+| **Almacenamiento** | Cloudinary SDK |
+| **Testing** | Jest (unit tests por servicio) |
 
 ---
 
 ## Arquitectura y Patrones (Service Pattern)
 
-Para mantener la responsabilidad única y facilitar el testing unitario, este proyecto desglosa la lógica de cada módulo en servicios especializados:
+Para mantener responsabilidad única y facilitar el testing unitario, cada módulo desglosa su lógica en servicios especializados. **Los controllers son finos y no contienen lógica de negocio.**
 
-- **`*Creator`**: Encargado de la creación de entidades, validaciones de negocio iniciales (ej: verificar que el precio de lista sea mayor al del dueño) y persistencia.
-- **`*Finder`**: Especializado en la recuperación de datos, implementación de filtros dinámicos (marca, modelo, transmisión, rangos de precio) mediante **QueryBuilder** y paginación.
-- **`*Updater`**: Gestiona la modificación de registros, lógica de cambio de estados (Disponible -> Reservado -> Vendido) y recálculo automático de comisiones.
-- **`*Deleter`**: Maneja la eliminación lógica (soft delete) para conservar registros históricos de ventas o física según se requiera.
+| Servicio | Responsabilidad |
+|---|---|
+| `*Creator` | Creación de entidades, validaciones de negocio iniciales y persistencia |
+| `*Finder` | Recuperación de datos, filtros dinámicos con QueryBuilder y paginación |
+| `*Updater` | Modificación de registros y cambios de estado (`AVAILABLE → RESERVED → SOLD`) |
+| `*Deleter` | Soft delete para preservar historial, o físico según el caso |
 
-### Versionado de API
-Todos los endpoints están bajo el prefijo `/api/v1/` para asegurar la compatibilidad con futuras versiones del frontend.
+### Estructura de un módulo
+```
+src/<módulo>/
+├── dto/
+│   ├── create-<módulo>.dto.ts
+│   ├── update-<módulo>.dto.ts
+│   └── filter-<módulo>.dto.ts
+├── entities/
+│   └── <módulo>.entity.ts
+├── services/
+│   ├── <módulo>-creator.service.ts
+│   ├── <módulo>-finder.service.ts
+│   ├── <módulo>-updater.service.ts
+│   └── <módulo>-deleter.service.ts
+├── <módulo>.controller.ts
+└── <módulo>.module.ts
+```
+
+### Estructura general del proyecto
+```
+src/
+├── app.module.ts
+├── main.ts
+├── lib/
+│   └── auth.ts             # Configuración Better Auth
+├── common/                 # Guards, interceptors, decorators globales
+├── config/                 # Variables de entorno tipadas (ConfigService)
+├── database/               # Migraciones TypeORM
+├── owners/                 # Clientes consignantes (CRM)
+├── users/                  # Usuarios del sistema
+├── vehicles/               # Vehículos en consignación
+├── consignments/           # Acuerdo Owner ↔ Vehículo + comisión acordada
+└── sales/                  # Registro de ventas y cálculo de comisiones
+```
+
+**Prefijo de API:** `/api` | **Swagger:** `/api/docs`
 
 ---
 
 ## Contexto de Negocio
 
-- **Modelo de Intermediación:** El sistema gestiona vehículos que pertenecen a terceros (clientes consignatarios).
-- **Gestión de Precios:**
-    - `owner_price`: Precio que el dueño real pretende recibir (Privado).
-    - `list_price`: Precio de venta al público (Público).
-    - **Comisión:** Diferencia calculada dinámicamente entre ambos montos.
-- **CRM de Dueños:** Vinculación directa entre cada vehículo y su propietario para seguimiento y contacto rápido.
-- **Permutas:** Soporte para indicar si un vehículo acepta "Usado + Diferencia" como parte de pago.
-- **Optimización de Medios:** Para minimizar costos de infraestructura, se limita la carga a **3 imágenes de alta calidad por vehículo** (Portada, Interior, Motor/Detalle).
+- **Modelo de intermediación** — Los vehículos pertenecen a terceros (consignantes). La concesionaria los vende y cobra una comisión.
+- **Gestión de precios**
+  - `owner_price` — Precio mínimo del dueño. **Privado, nunca se expone en endpoints públicos.**
+  - `list_price` — Precio de venta al público.
+  - `commission` — Calculada al registrar la venta (monto fijo o porcentaje según lo acordado).
+- **Formas de pago** — Efectivo, transferencia, permuta, permuta + diferencia, financiado.
+- **CRM de consignantes** — Cada vehículo está vinculado a su dueño para seguimiento y contacto.
+- **Imágenes** — Máximo 3 por vehículo (Portada, Interior, Detalle). Límite para optimizar costos de Cloudinary.
+- **Soft delete generalizado** — Vehículos, consignaciones y ventas conservan historial. No se eliminan físicamente.
 
 ---
 
-## Estructura de un Módulo (Ejemplo: Vehicles)
+## Levantar el proyecto
+```bash
+# 1. Instalar dependencias
+npm install
 
-```text
-src/modules/vehicles/
-├── dto/             
-├── entities/        
-├── services/               # Lógica de Negocio Granular
-│   ├── vehicle-creator.service.ts
-│   ├── vehicle-finder.service.ts
-│   ├── vehicle-updater.service.ts
-│   └── vehicle-deleter.service.ts
-├── vehicles.controller.ts  # Endpoints, Swagger Decorators y Guards
-└── vehicles.module.ts      # Registro de dependencias del módulo
+# 2. Configurar variables de entorno
+cp .env.example .env
+
+# 3. Correr migraciones
+npm run migration:run
+
+# 4. Desarrollo con hot-reload
+npm run start:dev
+```
+
+| Comando | Descripción |
+|---|---|
+| `npm run start:dev` | Desarrollo con hot-reload |
+| `npm run build` | Build de producción |
+| `npm run start:prod` | Producción |
+| `npm run migration:run` | Ejecutar migraciones pendientes |
+| `npm run migration:generate` | Generar nueva migración |
 
 ---
 
 ## Testing
-
-- Test all service methods and edge cases
-- Mock all external dependencies (services, repositories)
-- Use descriptive test names in Spanish or English
-- Group related tests using `describe` blocks
-- Test error scenarios and exception handling
-- Verify mock interactions with `expect().toHaveBeenCalledWith()`
-- Keep test files under 500 lines when possible (split into multiple files if needed)
-
----
-
-### Levantando la Aplicación
-
-| `npm run start` 
-| **`npm run start:dev
-| `npm run build`
-
----
-
-### Ejecución de Pruebas (Jest)
-
 ```bash
-# Ejecutar todos los tests unitarios una sola vez
-npm run test
+npm run test          # Todos los unit tests
+npm run test:watch    # Modo watch (desarrollo)
+npm run test:cov      # Reporte de coverage
+```
+
+Lineamientos:
+- Mockear todas las dependencias externas (repositorios, Cloudinary, servicios)
+- Agrupar con bloques `describe` por método
+- Cubrir casos de error y excepciones
+- Verificar interacciones con `expect().toHaveBeenCalledWith()`
+- Mantener archivos de test bajo 500 líneas
+
+---
+
+## Variables de entorno
+
+Ver `.env.example` en la raíz. Variables requeridas:
+```env
+PORT=
+DB_HOST=
+DB_PORT=
+DB_USERNAME=
+DB_PASSWORD=
+DB_NAME=
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
