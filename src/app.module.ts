@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OwnersModule } from './owners/owners.module';
+import { UsersModule } from './users/users.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { auth } from './lib/auth';
 
 @Module({
   imports: [
@@ -26,8 +29,10 @@ import { VehiclesModule } from './vehicles/vehicles.module';
           : false,
       }),
     }),
+    AuthModule.forRoot({ auth }),
     OwnersModule,
-    VehiclesModule
+    UsersModule,
+    VehiclesModule,
   ],
 })
 export class AppModule {}

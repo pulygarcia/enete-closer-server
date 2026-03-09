@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { VehicleCreator } from './services/vehicle-creator.service';
 import { VehicleFinder } from './services/vehicle-finder.service';
 import { VehicleUpdater } from './services/vehicle-updater.service';
@@ -21,11 +22,13 @@ export class VehiclesController {
   }
 
   @Get()
+  @AllowAnonymous()
   findAll(@Query('brand') brand?: string) {
     return this.vehicleFinder.findAll(brand);
   }
 
   @Get(':id')
+  @AllowAnonymous()
   findOne(@Param('id') id: string) {
     return this.vehicleFinder.findById(id);
   }

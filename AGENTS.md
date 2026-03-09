@@ -141,6 +141,40 @@ src/modules/<nombre>/
 
 ---
 
+### `users` — Usuarios del Sistema
+
+**Ruta:** `src/users/`  
+**Endpoint base:** `/api/users`
+
+#### Entidad principal: `User`
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id` | uuid | PK |
+| `name` | string | Nombre completo |
+| `email` | string | Email (único) |
+| `image` | string | URL avatar (opcional) |
+| `role` | enum | `ADMIN` \| `SELLER` \| `VIEWER` |
+| `deletedAt` | timestamp | Soft delete |
+
+#### Reglas de negocio
+
+- El email debe ser único. Validar en `UserCreator` y `UserUpdater`.
+- Soft delete con `@DeleteDateColumn`.
+- Eliminación mediante `UserDeleter` (soft remove).
+
+#### Endpoints
+
+| Método | Ruta | Servicio | Descripción |
+|---|---|---|---|
+| `GET` | `/api/users` | `UserFinder` | Listar con filtros (rol, búsqueda) |
+| `GET` | `/api/users/:id` | `UserFinder` | Detalle de un usuario |
+| `POST` | `/api/users` | `UserCreator` | Crear usuario (requiere rol `ADMIN`) |
+| `PATCH` | `/api/users/:id` | `UserUpdater` | Actualizar usuario |
+| `DELETE` | `/api/users/:id` | `UserDeleter` | Soft delete |
+
+---
+
 ### `auth` — Autenticación y Autorización
 
 **Ruta:** `src/modules/auth/`  
