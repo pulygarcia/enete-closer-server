@@ -5,6 +5,7 @@ import { OwnersModule } from './owners/owners.module';
 import { UsersModule } from './users/users.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { ConsignmentsModule } from './consignments/consignments.module';
+import { SalesModule } from './sales/sales.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { auth } from './lib/auth';
 
@@ -35,6 +36,7 @@ import { auth } from './lib/auth';
     UsersModule,
     VehiclesModule,
     ConsignmentsModule,
+    SalesModule,
   ],
 })
 export class AppModule {}

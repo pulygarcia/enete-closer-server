@@ -60,8 +60,6 @@ src/
 ├── lib/
 │   └── auth.ts             # Configuración Better Auth
 ├── common/                 # Guards, interceptors, decorators globales
-├── config/                 # Variables de entorno tipadas (ConfigService)
-├── database/               # Migraciones TypeORM
 ├── owners/                 # Clientes consignantes (CRM)
 ├── users/                  # Usuarios del sistema
 ├── vehicles/               # Vehículos en consignación
