@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OwnersModule } from './owners/owners.module';
 import { UsersModule } from './users/users.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
+import { ConsignmentsModule } from './consignments/consignments.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { auth } from './lib/auth';
 
@@ -33,6 +34,7 @@ import { auth } from './lib/auth';
     OwnersModule,
     UsersModule,
     VehiclesModule,
+    ConsignmentsModule,
   ],
 })
 export class AppModule {}

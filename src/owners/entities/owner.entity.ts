@@ -1,7 +1,5 @@
 import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
-// Import vehiculos after creating the vehicle entity
-// import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 
 @Entity('owners')
 export class Owner {
