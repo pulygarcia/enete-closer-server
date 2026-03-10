@@ -18,6 +18,9 @@ export class Vehicle {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ unique: true })
+  plate: string;
+
   @Column()
   brand: string;
 

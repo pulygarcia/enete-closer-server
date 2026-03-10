@@ -362,6 +362,8 @@ npm run test            # Todos los unit tests
 npm run test:watch      # Modo watch
 npm run test:cov        # Coverage
 
+npm run seed            # Ejecutar seeders (owners, etc.)
+
 npm run migration:run           # Ejecutar migraciones
 npm run migration:generate      # Generar migración nueva
 ```

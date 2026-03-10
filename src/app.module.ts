@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseSeedModule } from './database/database-seed.module';
 import { OwnersModule } from './owners/owners.module';
 import { UsersModule } from './users/users.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
@@ -32,6 +33,7 @@ import { auth } from './lib/auth';
       }),
     }),
     AuthModule.forRoot({ auth }),
+    DatabaseSeedModule,
     OwnersModule,
     UsersModule,
     VehiclesModule,
