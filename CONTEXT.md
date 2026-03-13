@@ -340,7 +340,7 @@ Regla: no se puede volver a AVAILABLE desde SOLD.
 - **Soft delete generalizado:** Entidades con historial (vehículos, consignaciones, ventas) usan `@DeleteDateColumn`.
 
 
-## Testing
+## Testing ** Jest **
 
 - Testear todos los métodos del servicio y sus casos borde
 - Mockear **todas** las dependencias externas (repositorios, servicios, Cloudinary)
@@ -350,20 +350,10 @@ Regla: no se puede volver a AVAILABLE desde SOLD.
 - Verificar interacciones con `expect().toHaveBeenCalledWith()`
 - Mantener archivos de test bajo 500 líneas (dividir si es necesario)
 
----
+### Alcance del testing
 
-## Comandos
-```bash
-npm run start:dev       # Desarrollo con hot-reload
-npm run build           # Build de producción
-npm run start:prod      # Producción
-
-npm run test            # Todos los unit tests
-npm run test:watch      # Modo watch
-npm run test:cov        # Coverage
-
-npm run seed            # Ejecutar seeders (owners, etc.)
-
-npm run migration:run           # Ejecutar migraciones
-npm run migration:generate      # Generar migración nueva
-```
+- **Services** — cobertura obligatoria al 80% mínimo. Es donde vive toda la lógica de negocio.
+- **Controllers** — no se testean por ahora. Los controllers son finos y no contienen lógica.
+  En el futuro, si se implementa lógica de autorización compleja, guards custom o transformación
+  de respuesta específica en algún controller, se agregarán tests para ese caso puntual.
+- **DTOs / Entities** — no se testean directamente.
