@@ -1,5 +1,5 @@
-import { IsString, IsNumber, IsEnum, IsOptional, IsArray, ArrayMaxSize, IsUUID, Min, IsBoolean } from 'class-validator';
-import { Transmission } from '../entities/vehicle.entity';
+import { IsString, IsNumber, IsEnum, IsOptional, IsArray, ArrayMaxSize, IsUUID, Min, IsBoolean, MaxLength } from 'class-validator';
+import { FuelType, Transmission, VehicleCondition } from '../entities/vehicle.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateVehicleDto {
@@ -27,4 +27,22 @@ export class CreateVehicleDto {
   @ApiProperty({ description: 'ID del dueño (UUID)' })
   @IsUUID()
   ownerId: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(1000)
+  description?: string;
+
+  @IsEnum(VehicleCondition)
+  @IsOptional()
+  condition?: VehicleCondition;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  trade_conditions?: string;
+
+  @IsEnum(FuelType)
+  @IsOptional()
+  fuel?: FuelType;
 }

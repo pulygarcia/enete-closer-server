@@ -13,6 +13,21 @@ export enum VehicleStatus {
   SOLD = 'SOLD',
 }
 
+export enum VehicleCondition {
+  EXCELLENT = 'Excelente',
+  VERY_GOOD = 'Muy bueno',
+  GOOD = 'Bueno',
+  WITH_DETAILS = 'Con detalles',
+}
+
+export enum FuelType {
+  NAFTA = 'Nafta',
+  DIESEL = 'Diesel',
+  GNC = 'GNC',
+  HYBRID = 'Híbrido',
+  ELECTRIC = 'Eléctrico',
+}
+
 @Entity('vehicles')
 export class Vehicle {
   @PrimaryGeneratedColumn('uuid')
@@ -40,6 +55,15 @@ export class Vehicle {
   })
   transmission: Transmission;
 
+  @Column({ type: 'enum', enum: VehicleCondition, nullable: true })
+  condition: VehicleCondition;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ type: 'text', nullable: true })
+  trade_conditions: string;
+
   //Using precision 12, scale 2 to handle large amounts without rounding errors
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   owner_price: number; 
@@ -49,6 +73,9 @@ export class Vehicle {
 
   @Column({ type: 'boolean', default: false })
   accepts_trade: boolean;
+  
+  @Column({ type: 'enum', enum: FuelType, nullable: true })
+  fuel: FuelType;
 
   @Column({
     type: 'enum',
@@ -76,3 +103,4 @@ export class Vehicle {
   @DeleteDateColumn()
   deletedAt?: Date;
 }
+

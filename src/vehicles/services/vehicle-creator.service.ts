@@ -25,6 +25,12 @@ export class VehicleCreator {
       throw new BadRequestException('El precio de lista no puede ser menor al precio del dueño (comisión negativa)');
     }
 
+    if (dto.trade_conditions && !dto.accepts_trade) {
+      throw new BadRequestException(
+        'No se pueden agregar condiciones de permuta si el vehículo no acepta permuta'
+      );
+    }
+
     const vehicle = this.vehicleRepository.create({
       ...dto,
       owner: owner,

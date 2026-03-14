@@ -103,5 +103,12 @@ describe('VehicleCreator', () => {
       );
       expect(vehicleRepository.save).not.toHaveBeenCalled();
     });
+
+    it('debería lanzar BadRequestException si se envían trade_conditions con accepts_trade false', async () => {
+      jest.spyOn(ownerRepository, 'findOneBy').mockResolvedValue(mockOwner as Owner);
+      const dto = { ...createVehicleDto, accepts_trade: false, trade_conditions: 'Solo autos hasta 2018' };
+
+      await expect(service.run(dto)).rejects.toThrow(BadRequestException);
+    })
   });
 });
