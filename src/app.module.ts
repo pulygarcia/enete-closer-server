@@ -9,6 +9,7 @@ import { ConsignmentsModule } from './consignments/consignments.module';
 import { SalesModule } from './sales/sales.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { auth } from './lib/auth';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { auth } from './lib/auth';
     VehiclesModule,
     ConsignmentsModule,
     SalesModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}
