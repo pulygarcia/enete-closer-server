@@ -5,6 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateVehicleDto {
   @ApiProperty() @IsString() brand: string;
   @ApiProperty() @IsString() model: string;
+  @ApiProperty() @IsString() plate: string;
   @ApiProperty() @IsNumber() @Min(1900) year: number;
   @ApiProperty() @IsNumber() @Min(0) km: number;
 

@@ -16,7 +16,6 @@ export const VEHICLE_SEED_DATA: Partial<Vehicle>[] = [
     images: [
       'https://cdn.peugeot.com.pe/image/1/208-front.jpg'
     ],
-    owner: {id: "372ad7b2-140c-44d3-9918-946e5357b3af"} as Owner
   },
   {
     brand: 'Renault',
@@ -31,7 +30,6 @@ export const VEHICLE_SEED_DATA: Partial<Vehicle>[] = [
     images: [
       'https://cdn.renault.com.ar/sandero-stepway.jpg'
     ],
-    owner: {id: "372ad7b2-140c-44d3-9918-946e5357b3af"} as Owner
   },
   {
     brand: 'Fiat',
@@ -46,7 +44,6 @@ export const VEHICLE_SEED_DATA: Partial<Vehicle>[] = [
     images: [
       'https://cdn.fiat.com.ar/cronos-drive.jpg'
     ],
-    owner: {id: "372ad7b2-140c-44d3-9918-946e5357b3af"} as Owner
   },
   {
     brand: 'Fiat',
@@ -61,7 +58,6 @@ export const VEHICLE_SEED_DATA: Partial<Vehicle>[] = [
     images: [
       'https://cdn.fiat.com.ar/cronos-drive.jpg'
     ],
-    owner: {id: "372ad7b2-140c-44d3-9918-946e5357b3af"} as Owner
   },
   {
     brand: 'Fiat',
@@ -76,6 +72,5 @@ export const VEHICLE_SEED_DATA: Partial<Vehicle>[] = [
     images: [
       'https://cdn.fiat.com.ar/cronos-drive.jpg'
     ],
-    owner: {id: "372ad7b2-140c-44d3-9918-946e5357b3af"} as Owner
   }
 ];

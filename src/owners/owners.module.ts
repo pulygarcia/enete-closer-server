@@ -3,6 +3,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Owner } from './entities/owner.entity';
+import { Vehicle } from 'src/vehicles/entities/vehicle.entity';
 import { OwnersController } from './owners.controller';
 
 //Granular services
@@ -13,7 +14,7 @@ import { OwnerDeleter } from './services/owner-deleter.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Owner]),
+    TypeOrmModule.forFeature([Owner, Vehicle]),
   ],
   controllers: [OwnersController],
   providers: [
