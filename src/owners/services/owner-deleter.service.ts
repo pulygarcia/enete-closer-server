@@ -20,6 +20,14 @@ export class OwnerDeleter {
       throw new NotFoundException(`No se pudo eliminar: Dueño con ID ${id} no encontrado`);
     }
 
-    await this.vehicleRepository.softDelete({ owner: { id } });
+    const vehicles = await this.vehicleRepository
+      .createQueryBuilder('vehicle')
+      .select('vehicle.id')
+      .where('vehicle.owner = :ownerId', { ownerId: id })
+      .getMany();
+
+    if (vehicles.length > 0) {
+      await this.vehicleRepository.softDelete(vehicles.map((v) => v.id));
+    }
   }
 }
