@@ -88,47 +88,23 @@ src/<módulo>/
 src/
 ├── app.module.ts
 ├── main.ts
+├── seed.ts
 ├── lib/
 │   └── auth.ts
-├── owners/
-│   ├── dto/
-│   │   ├── create-owner.dto.ts
-│   │   └── update-owner.dto.ts
-│   ├── entities/
-│   │   └── owner.entity.ts
-│   ├── services/
-│   │   ├── owner-creator.service.ts
-│   │   ├── owner-finder.service.ts
-│   │   ├── owner-updater.service.ts
-│   │   └── owner-deleter.service.ts
-│   ├── owners.controller.ts
-│   └── owners.module.ts
-├── users/
-│   ├── dto/
-│   │   ├── create-user.dto.ts
-│   │   ├── update-user.dto.ts
-│   │   └── filter-user.dto.ts
-│   ├── entities/
-│   │   └── user.entity.ts
-│   ├── services/
-│   │   ├── user-finder.service.ts
-│   │   ├── user-updater.service.ts
-│   │   └── user-deleter.service.ts
-│   ├── users.controller.ts
-│   └── users.module.ts
-└── vehicles/
-    ├── dto/
-    │   ├── create-vehicle.dto.ts
-    │   └── update-vehicle.dto.ts
-    ├── entities/
-    │   └── vehicle.entity.ts
-    ├── services/
-    │   ├── vehicle-creator.service.ts
-    │   ├── vehicle-finder.service.ts
-    │   ├── vehicle-updater.service.ts
-    │   └── vehicle-deleter.service.ts
-    ├── vehicles.controller.ts
-    └── vehicles.module.ts
+├── database/
+│   ├── database-seed.module.ts
+│   ├── data/
+│   │   ├── owners.ts
+│   │   └── vehicles.ts
+│   └── seeders/
+│       ├── owners.seeder.ts
+│       └── vehicles.seeder.ts
+├── owners/          ← creator, finder, updater, deleter + specs
+├── users/           ← finder, updater, deleter + specs (sin creator — lo maneja Better Auth)
+├── vehicles/        ← creator, finder, updater, deleter + specs
+├── consignments/    ← creator, finder, updater, deleter + specs
+├── sales/           ← creator, finder, deleter + specs (sin updater — Sales son inmutables)
+└── dashboard/       ← solo finder service + spec
 ```
 
 ---
@@ -178,17 +154,19 @@ src/
 | `year` | number | Año de fabricación |
 | `km` | number | Kilometraje |
 | `transmission` | enum | `Manual` \| `Automático` (Transmission enum) |
+| `condition` | enum | `Excelente` \| `Muy bueno` \| `Bueno` \| `Con detalles` (nullable) |
+| `description` | text | Descripción del vehículo (nullable) |
+| `trade_conditions` | text | Condiciones de permuta (nullable) |
 | `owner_price` | decimal | Precio mínimo del dueño *(privado, nunca exponer en API pública)* |
 | `list_price` | decimal | Precio de venta al público |
 | `accepts_trade` | boolean | Acepta permuta (default: false) |
+| `fuel` | enum | `Nafta` \| `Diesel` \| `GNC` \| `Híbrido` \| `Eléctrico` (nullable) |
 | `status` | enum | `AVAILABLE` \| `RESERVED` \| `SOLD` (default: AVAILABLE) |
 | `images` | array | URLs de Cloudinary (máx. 3) |
-| `owner` | relation | ManyToOne → `Owner` |
+| `owner` | relation | ManyToOne → `Owner` (CASCADE) |
 | `createdAt` | timestamp | Fecha de creación |
 | `updatedAt` | timestamp | Fecha de actualización |
 | `deletedAt` | timestamp | Soft delete |
-
-> **Campos planificados** (consignments/sales): `color`, `fuel`, `doors`, `condition`, `description`, `payment_methods`, `trade_conditions`, `consignment`.
 
 #### Formas de pago (`payment_methods`) *(próximo)*
 ```typescript
@@ -269,7 +247,7 @@ Regla: no se puede volver a AVAILABLE desde SOLD.
 
 ---
 
-### `consignments` — Consignaciones *(próximo)*
+### `consignments` — Consignaciones
 
 **Ruta:** `src/consignments/`
 **Endpoint base:** `/api/consignments`
@@ -299,7 +277,7 @@ Regla: no se puede volver a AVAILABLE desde SOLD.
 
 ---
 
-### `sales` — Ventas y Comisiones *(próximo)*
+### `sales` — Ventas y Comisiones
 
 **Ruta:** `src/sales/`
 **Endpoint base:** `/api/sales`
@@ -325,6 +303,27 @@ Regla: no se puede volver a AVAILABLE desde SOLD.
   - `PERCENTAGE`: `sale_price * (commission_value / 100)`.
 - Una vez creada, la `Sale` es **inmutable** (preservar histórico contable).
 - Al crear la `Sale`, el vehículo pasa a `SOLD` y la consignación a `SOLD`.
+
+---
+
+### `dashboard` — Estadísticas del Panel
+
+**Ruta:** `src/dashboard/`
+**Endpoint base:** `/api/dashboard`
+
+> Módulo de solo lectura. Agrega datos de múltiples entidades en una sola llamada.
+
+#### Datos que expone `getStats()`
+
+| Clave | Descripción |
+|---|---|
+| `counters.available` | Vehículos disponibles |
+| `counters.reserved` | Vehículos reservados |
+| `counters.monthlySales` | Ventas del mes en curso |
+| `counters.monthlyCommissions` | Comisiones del mes en curso |
+| `recentVehicles` | Últimos 5 vehículos agregados |
+| `recentSales` | Últimas 5 ventas (con relación vehicle) |
+| `stalledVehicles` | Vehículos disponibles sin movimiento > 30 días |
 
 ---
 
